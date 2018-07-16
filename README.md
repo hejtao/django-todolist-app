@@ -25,7 +25,7 @@
     - 标记后自动进入该任务所在的分页
     - 撤销标记
 
-![](https://upload-images.jianshu.io/upload_images/1863961-b8c7fae4b9a2e47f.gif?imageMogr2/auto-orient/strip)
+![](https://github.com/jiangtaohe/django-1.8-todolist-app/blob/master/gif/%E6%A0%87%E8%AE%B0%E5%92%8C%E6%92%A4%E9%94%80.gif)
 
 - 支持优先级排序和截止时间排序（若两者都开启，后开启的生效；若两者都关闭，则按生成的先后顺序排列）
 

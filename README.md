@@ -18,7 +18,7 @@
     - 设置截止时间，优先级，任务具体内容（默认截止时间为生成时间，默认优先级为3）
     - 保存后自动进入该任务所在分页
     - 任务名为空警告
-    
+
 ![](https://upload-images.jianshu.io/upload_images/1863961-3bebd0fe03ed24c7.gif?imageMogr2/auto-orient/strip)
 
 - 标记任务为已完成

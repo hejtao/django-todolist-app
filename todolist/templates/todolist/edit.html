@@ -1,0 +1,172 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+
+
+
+
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>小禾记事</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="{% static 'todolist/bs/css/flatly.min.css' %}" />
+		<link rel="stylesheet" href="{% static 'todolist/styles.css' %}" />
+		<link rel="icon" href="{% static 'icon.png' %}"  type="image/x-icon"/>
+	</head>
+	<body>
+		<div class="container-fluid" id="wrapper">
+			<div class="row">
+				<div class="col-lg-4 col-lg-offset-4" id="content">
+					{% if start_edition %}
+
+					<div class="row t10">
+						<div class="col-lg-12">
+							<div class="btn-toolbar">
+
+								<div class="btn-group">
+									<a href="{% url 'edittask' todo.id %}">
+										<button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="返回上级">
+											<i class="glyphicon glyphicon-chevron-left"></i>
+										</button>
+									</a>
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+					<h2>任务设置</h2>
+					<div class="row">&nbsp;  </div>
+
+					<form action="{% url 'submitbody' %}" method="POST">
+						{% csrf_token %}
+						<div class="form-group">
+							<div class="input-group">
+								<label>截止时间设置：</label><div class="text-center"><input type="datetime-local" name="expire_date"></div>
+
+								<div class="row"> &nbsp;  </div>
+								<label>优先级设置：</label>
+						    <input type="range" class="form-control-range" min="1" max="4" name="pri">
+								<div class="row"> &nbsp;  </div>
+
+
+								<label>内容编辑：</label>
+							 	{{ area.body }}
+								<div class="row">&nbsp;  </div>
+
+								<button type="submit" class="btn btn-info btn-block btn-sm" data-toggle="tooltip" data-placement="bottom" title="保存设置"><i class="glyphicon glyphicon-floppy-disk"></i></button>
+							</div>
+						</div>
+					</form>
+					{% else %}
+
+					<div class="row t10">
+						<div class="col-lg-12">
+							<div class="btn-toolbar">
+
+								<div class="btn-group">
+									<a href="{% url 'index' %}">
+										<button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="返回上级">
+											<i class="glyphicon glyphicon-chevron-left"></i>
+										</button>
+									</a>
+								</div>
+
+								<div class="btn-group">
+									{% if dis_button %}
+									<button type="button" class="btn btn-success btn-sm" disabled><i class="glyphicon glyphicon-ok"></i></button>
+									{% else %}
+									<a href="{% url 'complete' todo_id %}">
+										<button type="button" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="已完成">
+											<i class="glyphicon glyphicon-ok"></i>
+										</button>
+									</a>
+									{% endif %}
+								</div>
+
+								<div class="btn-group">
+									{% if dis_button %}
+									<a href="{% url 'discomplete' todo_id %}">
+										<button type="button" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="重启该任务">
+											<i class="glyphicon glyphicon-repeat"></i>
+										</button>
+									</a>
+									{% else %}
+									<button type="button" class="btn btn-success btn-sm" title="重启该任务" disabled><i class="glyphicon glyphicon-repeat"></i></button>
+									{% endif %}
+								</div>
+
+
+								<div class="btn-group">
+									{% if not start_edition %}
+									<a href="{% url 'start_edition' %}">
+										<button type="button" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="bottom" title="编辑该任务">
+											<i class="glyphicon glyphicon-edit"></i>
+										</button>
+									</a>
+									{% endif %}
+								</div>
+
+
+								<div class="btn-group">
+									<a href="{% url 'deletethis' %}">
+										<button type="button" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="bottom" title="删除该任务">
+											<i class="glyphicon glyphicon-trash"></i>
+										</button>
+									</a>
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+					<h2>任务详情</h2>
+					<div class="row"> &nbsp;  </div>
+					<label>任务名称：</label>
+					{{ todo.text }}
+					<div class="row"> &nbsp;  </div>
+
+					<label>截止时间：</label>
+					{{ todo.expire_date|date:'Y-m-d H:i' }}
+					<div class="row"> &nbsp;  </div>
+
+					<label>优先等级：</label>
+					{% if todo.pri == 1 %}
+					<div class="progress">
+						<div class="progress-bar bg-success" role="progressbar" style="width: 25%"  aria-valuemin="0" aria-valuemax="10">最不要紧</div>
+					</div>
+					{% endif %}
+					{% if todo.pri == 2 %}
+					<div class="progress">
+  					<div class="progress-bar bg-info" role="progressbar" style="width: 50%"  aria-valuemin="0" aria-valuemax="10">不大要紧</div>
+					</div>
+					{% endif %}
+					{% if todo.pri == 3 %}
+					<div class="progress">
+						<div class="progress-bar bg-warning" role="progressbar" style="width: 75%"  aria-valuemin="0" aria-valuemax="10">比较紧急</div>
+					</div>
+					{% endif %}
+					{% if todo.pri == 4 %}
+					<div class="progress">
+						<div class="progress-bar bg-danger" role="progressbar" style="width: 100%"  aria-valuemin="0" aria-valuemax="10">非常紧急</div>
+					</div>
+					{% endif %}
+
+					<label>任务内容：</label>
+					<div class="form-group">
+						 	<textarea rows="6" cols="91" readonly>{{ todo.body }}</textarea>
+					</div>
+					{% endif %}
+
+				</div>
+			</div>
+		</div>
+
+	</body>
+</html>

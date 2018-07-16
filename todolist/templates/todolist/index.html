@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>小禾记事</title>
+
+
+		<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="{% static 'todolist/bs/css/flatly.min.css' %}" />
+		<link rel="stylesheet" href="{% static 'todolist/styles.css' %}" />
+		<link rel="icon" href="{% static 'icon.png' %}"  type="image/x-icon"/>
+	</head>
+	<body>
+
+		<div class="container-fluid" id="wrapper">
+
+			<div class="row">
+				<div class="col-lg-4 col-lg-offset-4" id="content">
+
+
+					<form action="{% url 'add' %}" method="POST" role="form">
+						{% csrf_token %}
+						<div class="form-group">
+							<div class="input-group">
+							  {{ form.text }}
+							  <span class="input-group-btn">
+								  <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="添加新任务"><i class="glyphicon glyphicon-plus"></i></button>
+							  </span>
+							</div>
+						</div>
+					</form>
+
+					{% if has_warning %}
+					<div class="alert alert-warning btn-sm text-center">
+						<a href="#" class="close" data-dismiss="alert">
+							<i class="glyphicon glyphicon-remove"></i>
+						</a>
+						<strong>任务名称不能为空 !</i></strong>
+					</div>
+					{% endif %}
+
+					<h2>任务列表</h2>
+					<ul class="list-group t20">
+						{% for todo in contacts %}
+							{% if todo.complete %}
+							<a href="{% url 'edittask' todo.id %}" data-toggle="tooltip" data-placement="bottom" title="查看任务"><li class="list-group-item todo-completed"><span class="glyphicon glyphicon-option-vertical form-control-feedback"></span>{{ todo.text }}</li></a>
+							{% else %}
+							<a href="{% url 'edittask' todo.id %}" data-toggle="tooltip" data-placement="bottom" title="查看任务"><li class="list-group-item"><span class="glyphicon glyphicon-option-vertical form-control-feedback"></span>{{ todo.text }}</li></a>
+							{% endif %}
+						{% endfor %}
+					</ul>
+
+					<div class="row t10">
+						<div class="col-lg-12">
+							<div class="btn-toolbar">
+								<div class="btn-group">
+									{% if dis_deleteall_button %}
+									<button type="button" class="btn btn-danger btn-sm"  title="清空所有任务" disabled>
+										<i class="glyphicon glyphicon-trash"></i>
+									</button>
+									{% else %}
+									<a href="{% url 'deleteall' %}"><button type="button" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="bottom" title="清空所有任务">
+										<i class="glyphicon glyphicon-trash"></i>
+									</button></a>
+									{% endif %}
+								</div>
+								<div class="btn-group">
+									{% if dis_deletecomplete_button %}
+									<button type="button" class="btn btn-warning btn-sm"  title="擦除已完成任务" disabled>
+										<i class="glyphicon glyphicon-erase"></i>
+									</button>
+									{% else %}
+									<a href="{% url 'deletecompleted' %}"><button type="button" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="bottom" title="擦除已完成任务">
+										<i class="glyphicon glyphicon-erase"></i>
+									</button></a>
+									{% endif %}
+								</div>
+
+								<div class="btn-group">
+									{% if dis_order_btn %}
+									<button type="button" class="btn btn-info btn-sm"  disabled><i class="glyphicon glyphicon-sort-by-order" title="截止时间排序"></i></button>
+									{% else %}
+										{% if date_order_flag %}
+										<a href="{% url 'order_by_date_btn' %}"><button type="button" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="bottom" title="已开启截止时间排序">
+											<i class="glyphicon glyphicon-sort-by-order"></i>&#8730;
+										</button></a>
+										{% else %}
+										<a href="{% url 'order_by_date_btn' %}"><button type="button" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="bottom" title="已关闭截止时间排序">
+											<i class="glyphicon glyphicon-sort-by-order"></i>&#215;
+										</button></a>
+										{% endif %}
+									{% endif %}
+								</div>
+
+
+								<div class="btn-group">
+									{% if dis_order_btn %}
+									<button type="button" class="btn btn-info btn-sm"  disabled><i class="glyphicon glyphicon-sort" title="优先级排序"></i></button>
+									{% else %}
+										{% if pri_order_flag %}
+										<a href="{% url 'order_by_pri_btn' %}"><button type="button" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="bottom" title="已开启优先级排序">
+											<i class="glyphicon glyphicon-sort"></i>&#8730;
+										</button></a>
+										{% else %}
+										<a href="{% url 'order_by_pri_btn' %}"><button type="button" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="bottom" title="已关闭优先级排序">
+											<i class="glyphicon glyphicon-sort"></i>&#215;
+										</button></a>
+										{% endif %}
+									{% endif %}
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+					<div class="text-center">
+						<div class="pagination">
+					    <span class="step-links">
+									{% if contacts.number > 2 %}
+									<a href="?page=1"  title="首页"><i class="glyphicon glyphicon-backward"></i></a>
+									{% endif %}
+					        {% if contacts.has_previous %}
+					            <a href="?page={{ contacts.previous_page_number }}"  title="上一页"><i class="glyphicon glyphicon-triangle-left"></i></a>
+					        {% endif %}
+
+					        <span class="current">
+					            {{ contacts.number }} / {{ contacts.paginator.num_pages }}
+					        </span>
+
+					        {% if contacts.has_next %}
+					            <a href="?page={{ contacts.next_page_number }}" title="下一页"><i class="glyphicon glyphicon-triangle-right"></i></a>
+					        {% endif %}
+
+									{% if contacts.number < last_second_page %}
+									<a href="?page={{ contacts.paginator.num_pages }}"  title="末页"><i class="glyphicon glyphicon-forward"></i></a>
+									{% endif %}
+					    </span>
+						</div>
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+	</body>
+</html>

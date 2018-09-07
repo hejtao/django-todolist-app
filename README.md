@@ -1,4 +1,4 @@
-### 简介
+### 简介（该App包含三个页面）
 ![](https://upload-images.jianshu.io/upload_images/1863961-a042f1e9226309e8.JPG?imageMogr2/auto-orient/strip%7CimageView2/2/w/540)
 
 ![](https://upload-images.jianshu.io/upload_images/1863961-f2620a3760390d86.JPG?imageMogr2/auto-orient/strip%7CimageView2/2/w/540)
